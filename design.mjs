@@ -23,7 +23,10 @@ const missing = [
 ];
 if (missing.length > 0) {
   console.error(
-    `Missing ${missing.join(', ')}.\nUsage: npm start -- "<brief>", with the variables of .env.template set in .env`
+    `Missing ${missing.join(', ')}.\nUsage: npm start -- "<brief>", with the variables of .env.template set in .env` +
+      (process.env.IMGLY_CESDK_LICENSE
+        ? ''
+        : '\nContact sales (https://img.ly/forms/contact-sales/) to get a CoDesign license key.')
   );
   process.exit(1);
 }
