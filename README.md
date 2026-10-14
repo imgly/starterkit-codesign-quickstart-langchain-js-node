@@ -10,7 +10,7 @@ editable design. It is for engineers who want to add AI design generation to
 their product with LangChain.js.
 
 **Documentation:**
-[Quickstart: LangChain.js](https://img.ly/docs/cesdk/codesign/starter-kits/quickstart-langchain-cdsqlc/) ·
+[CoDesign SDK for LangChain.js](https://img.ly/docs/cesdk/codesign/starter-kits/quickstart-langchain-cdsqlc/) ·
 **The same quickstart on:** [Vercel AI SDK](https://github.com/imgly/starterkit-codesign-quickstart-ai-sdk-js-node) · [OpenAI Agents SDK](https://github.com/imgly/starterkit-codesign-quickstart-openai-agents-js-node) · [Mastra](https://github.com/imgly/starterkit-codesign-quickstart-mastra-js-node) · [pi](https://github.com/imgly/starterkit-codesign-quickstart-pi-js-node) · [Claude Agent SDK](https://github.com/imgly/starterkit-codesign-quickstart-claude-agent-sdk-js-node)
 
 Terms used below: **CE.SDK** is IMG.LY's design engine and editor. A
@@ -64,8 +64,11 @@ curl http://localhost:8080/health
 ```
 
 The first start downloads the image. If `/health` does not answer, run
-`docker logs codesign-executor`: the executor stops at start when the key is
+`docker logs codesign-executor-langchain`: the executor stops at start when the key is
 missing or cannot be activated, or when it cannot reach `api.img.ly`.
+
+After you change `.env`, run `npm run executor` again: it replaces the
+container, which reads `.env` only when it starts.
 
 Then design something:
 
@@ -126,15 +129,17 @@ tokens are charged to the same account through the gateway.
 
 ## Troubleshooting
 
-| Symptom                                                     | Cause and fix                                                                                                                                                    |
-| ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `The container name "/codesign-executor" is already in use` | The executor is already running. Check `curl http://localhost:8080/health`, or run `npm run executor:stop` first.                                                |
-| `node: .env: not found`                                     | Copy `.env.template` to `.env`.                                                                                                                                  |
-| `Missing IMGLY_CESDK_LICENSE, EXECUTOR_TOKEN`               | Set both in `.env`.                                                                                                                                              |
-| `missing or wrong executor token`                           | The executor answered 401 with another token: after changing `EXECUTOR_TOKEN`, run `npm run executor:stop` and `npm run executor` again so the executor gets it. |
-| `executor_unreachable`                                      | The executor is not running or restarting: check `curl http://localhost:8080/health`.                                                                            |
-| The gateway answers 402 `insufficient_credits`              | The account behind the key is out of credits.                                                                                                                    |
-| `The run ended with an error`                               | The message after it says why, such as the gateway refusing a call or the step limit; no PNG was exported, and the design so far is in `out/design.imgly`.       |
+| Symptom                                                                                                                                                                                | Cause and fix                                                                                                                                                                |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `The container name "/codesign-executor-langchain" is already in use`, or `docker logs codesign-executor-langchain` shows `no CoDesign license key` and the container keeps restarting | The container still has the `.env` it was started with. Run `npm run executor` again: it replaces the container.                                                             |
+| `node: .env: not found`                                                                                                                                                                | Copy `.env.template` to `.env`.                                                                                                                                              |
+| `Missing IMGLY_CESDK_LICENSE, EXECUTOR_TOKEN`                                                                                                                                          | Set both in `.env`.                                                                                                                                                          |
+| The script uses another key or token than the one in `.env`                                                                                                                            | `npm start` reads `.env` with Node's `--env-file`, which never overrides a variable already exported in your shell. Unset it there, for example `unset IMGLY_CESDK_LICENSE`. |
+| `The page has no blocks, so no PNG was exported`                                                                                                                                       | Usually the model asked a question instead of designing. Put the answer into the brief, and run again. No export was charged.                                                |
+| `missing or wrong executor token`                                                                                                                                                      | The executor answered 401 with another token: after changing `EXECUTOR_TOKEN`, run `npm run executor` again so the executor gets it.                                         |
+| `executor_unreachable`                                                                                                                                                                 | The executor is not running or restarting: check `curl http://localhost:8080/health`.                                                                                        |
+| The gateway answers 402 `insufficient_credits`                                                                                                                                         | The account behind the key is out of credits.                                                                                                                                |
+| `The run ended with an error`                                                                                                                                                          | The message after it says why, such as the gateway refusing a call or the step limit; no PNG was exported, and the design so far is in `out/design.imgly`.                   |
 
 ## FAQ
 
