@@ -117,12 +117,12 @@ tokens are charged to the same account through the gateway.
 
 ## Variables
 
-| Variable              | What it is                                                                                                                |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `IMGLY_CESDK_LICENSE` | Your CoDesign license key. The executor uses it for the engine and exports, the script for the model.                     |
-| `EXECUTOR_TOKEN`      | A secret the executor and the script share. A different one gets 401.                                                     |
-| `MODEL`               | Optional. Default `@openrouter/anthropic/claude-opus-5`. The gateway lists its ids at `https://gateway.img.ly/v1/models`. |
-| `EXECUTOR_URL`        | Optional. Default `http://localhost:8080`.                                                                                |
+| Variable              | What it is                                                                                                                                                                                                                                                                                                                  |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `IMGLY_CESDK_LICENSE` | Your CoDesign license key. The executor uses it for the engine and exports, the script for the model.                                                                                                                                                                                                                       |
+| `EXECUTOR_TOKEN`      | A secret the executor and the script share. A different one gets 401.                                                                                                                                                                                                                                                       |
+| `MODEL`               | Optional. Default `@openrouter/anthropic/claude-opus-5`. Any model OpenRouter serves works as `@openrouter/` and its OpenRouter id, such as `@openrouter/anthropic/claude-haiku-5.5`. The gateway lists its own ids with your key: `curl -H "Authorization: Bearer $IMGLY_CESDK_LICENSE" https://gateway.img.ly/v1/models`. |
+| `EXECUTOR_URL`        | Optional. Default `http://localhost:8080`.                                                                                                                                                                                                                                                                                  |
 
 ## Troubleshooting
 
@@ -134,7 +134,7 @@ tokens are charged to the same account through the gateway.
 | `missing or wrong executor token`                           | The executor answered 401 with another token: after changing `EXECUTOR_TOKEN`, run `npm run executor:stop` and `npm run executor` again so the executor gets it. |
 | `executor_unreachable`                                      | The executor is not running or restarting: check `curl http://localhost:8080/health`.                                                                            |
 | The gateway answers 402 `insufficient_credits`              | The account behind the key is out of credits.                                                                                                                    |
-| `The run ended with an error`                               | The message after it says why, such as the gateway refusing a call or the step limit; nothing was exported.                                                      |
+| `The run ended with an error`                               | The message after it says why, such as the gateway refusing a call or the step limit; no PNG was exported, and the design so far is in `out/design.imgly`.       |
 
 ## FAQ
 
